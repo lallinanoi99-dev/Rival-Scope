@@ -3,7 +3,7 @@
 **The research engine behind irresistible brands** — paste your website and up to 3 competitors, and see how you compare, where the gaps are, and what to say instead. Stamp each report on **BOT Chain**.
 
 - Live site: `https://YOUR_DOMAIN` *(fill in after GitHub Pages deploy)*
-- Contract (BOT Chain mainnet, chain ID 677): `0x… (not deployed yet)` — `https://scan.botchain.ai/address/<MAINNET_CONTRACT_ADDRESS>`
+- Contract (BOT Chain mainnet, chain ID 677): `0x910CF2Aea22a90Ddb5BB0b0CDEAa71eceE2fF2CF` — https://scan.botchain.ai/address/0x910CF2Aea22a90Ddb5BB0b0CDEAa71eceE2fF2CF
 
 > Automated, rule-based analysis of public web pages on a given date — **no AI, no API keys, free to run** — not statements of fact about any company. Every profile field quotes the page; if the quote isn't on the page, the field shows **"not shown"** instead of a guess.
 
@@ -60,10 +60,10 @@ node scripts/serve.mjs 5181
 ```
 Open http://localhost:5181 and try **See an example**. Tests: `node scripts/test-scope.mjs`.
 
-To read real websites locally, also run the Worker (the app uses `http://127.0.0.1:8787` automatically on localhost):
+To read real websites locally, also run the Worker (the app uses `http://127.0.0.1:8790` automatically on localhost):
 ```bash
 npm --prefix worker install
-npm --prefix worker run dev -- --port 8787 --ip 127.0.0.1
+npm --prefix worker run dev -- --port 8790 --ip 127.0.0.1
 ```
 No API key is needed.
 

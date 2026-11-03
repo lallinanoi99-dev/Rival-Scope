@@ -5,14 +5,13 @@ export const CONFIG = {
 
   // Paste the deployed RivalScopeReports address here. Zero address = "not deployed yet" mode
   // (analysis and PDF export still work; stamping is disabled).
-  MAINNET_CONTRACT_ADDRESS: "0x0000000000000000000000000000000000000000",
+  MAINNET_CONTRACT_ADDRESS: "0x910CF2Aea22a90Ddb5BB0b0CDEAa71eceE2fF2CF",
   TESTNET_CONTRACT_ADDRESS: "0x0000000000000000000000000000000000000000",
 
-  // Cloudflare Worker with /extract-url, /scope/profile and /scope/compare.
-  // Leave empty for demo mode: pages are read in the browser where possible (same-origin demo sites)
-  // and profiles/comparisons come from a simple rule-based analyser instead of the AI.
-  // On localhost the app uses a Worker started with `npm --prefix worker run dev` (port 8787).
-  WORKER_URL: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? "http://127.0.0.1:8787" : "",
+  // Cloudflare Worker with /extract-url (the page reader). All analysis runs in the browser.
+  // Leave empty and only the demo sites and pasted text can be read.
+  // On localhost the app uses a Worker started with `npm --prefix worker run dev` (port 8790).
+  WORKER_URL: /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? "http://127.0.0.1:8790" : "",
 
   // Fictional demo sites (folder /demo in this repo) used by "See an example".
   DEMO_SITES: ["/demo/brewly/", "/demo/beanbox/", "/demo/cuppa-club/"],
