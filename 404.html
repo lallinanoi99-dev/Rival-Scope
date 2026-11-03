@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>RivalScope</title>
+<script>
+  // GitHub Pages SPA redirect: /app/report/x?tab=map → /?p=/app/report/x&q=tab=map (index.html restores the real URL).
+  (function (l) {
+    if (!/^\/app(\/|$)/.test(l.pathname)) { l.replace("/"); return; }
+    l.replace("/?p=" + encodeURIComponent(l.pathname) + (l.search ? "&q=" + encodeURIComponent(l.search.slice(1)) : "") + l.hash);
+  })(window.location);
+</script>

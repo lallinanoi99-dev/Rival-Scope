@@ -1,0 +1,19 @@
+name = "rivalscope-worker"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Comma-separated list of sites allowed to call this Worker (localhost is always allowed for dev)
+ALLOWED_ORIGINS = "https://YOUR_DOMAIN,https://YOUR_GITHUB_USER.github.io"
+
+# Daily per-IP limit: 40 page reads.
+# Create with: npx wrangler kv namespace create RATE — then paste the id below and uncomment.
+# [[kv_namespaces]]
+# binding = "RATE"
+# id = "PASTE_KV_ID"
+
+
+# No request logging of page text: observability stays off.
+[observability]
+enabled = false
