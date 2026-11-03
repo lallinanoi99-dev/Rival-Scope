@@ -2,9 +2,17 @@
 <meta charset="utf-8">
 <title>RivalScope</title>
 <script>
-  // GitHub Pages SPA redirect: /app/report/x?tab=map → /?p=/app/report/x&q=tab=map (index.html restores the real URL).
+  // GitHub Pages SPA redirect: <base>/app/report/x?tab=map → <base>/?p=/app/report/x&q=tab=map
+  // (index.html restores the real URL). <base> is "/" on a custom domain or "/Rival-Scope/" on github.io.
   (function (l) {
-    if (!/^\/app(\/|$)/.test(l.pathname)) { l.replace("/"); return; }
-    l.replace("/?p=" + encodeURIComponent(l.pathname) + (l.search ? "&q=" + encodeURIComponent(l.search.slice(1)) : "") + l.hash);
+    var m = l.pathname.match(/^(.*?\/)app(\/.*)?$/);
+    if (m) {
+      var base = m[1];
+      l.replace(base + "?p=" + encodeURIComponent("/" + l.pathname.slice(base.length)) + (l.search ? "&q=" + encodeURIComponent(l.search.slice(1)) : "") + l.hash);
+      return;
+    }
+    // Any other unknown page → the site's home (first folder on github.io, else the root).
+    var home = /\.github\.io$/.test(l.hostname) ? l.pathname.replace(/^(\/[^/]+\/).*$/, "$1") : "/";
+    l.replace(home !== l.pathname ? home : "/");
   })(window.location);
 </script>

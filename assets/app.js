@@ -1,5 +1,5 @@
 // The RivalScope app: add sites → analysing → report tabs → export / stamp → proof page, re-run diff, My reports.
-import { CONFIG, IS_DEPLOYED, NET } from "./config.js";
+import { CONFIG, IS_DEPLOYED, NET, at } from "./config.js";
 import * as S from "./scope.js";
 import { extractPage, extractFromText } from "./extract-core.js";
 import { $, $$, esc, toast, modal, closeModal, confirmBox, confetti, loadScript, nav, reduced } from "./ui.js";
@@ -25,7 +25,7 @@ const newId = () => "r" + Date.now().toString(36) + Math.random().toString(36).s
 const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 const fmtDateTime = (iso) => new Date(iso).toLocaleString(undefined, { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 const color = (i) => S.BRAND_COLORS[i] || "#999";
-const proofUrl = (id) => `${location.origin}/app?report=${id}`;
+const proofUrl = (id) => `${location.origin}${at(`/app?report=${id}`)}`;
 
 // ---------- worker ----------
 async function post(path, body, ms = 60000) {
@@ -236,7 +236,7 @@ function usePaste(i) {
 
 function fillExample() {
   draft = freshDraft();
-  draft.rows = CONFIG.DEMO_SITES.map((p) => ({ ...blankRow(), input: location.origin + p }));
+  draft.rows = CONFIG.DEMO_SITES.map((p) => ({ ...blankRow(), input: location.origin + at(p) }));
   draft.industry = "Coffee subscriptions";
   draft.customer = "home coffee lovers";
   const ind = $("#industry"), cus = $("#customer");
@@ -354,7 +354,7 @@ function renderReport(el, r, tab) {
     if (!b) return;
     view.tab = b.dataset.tab;
     $$(".tabs button", el).forEach((x) => x.setAttribute("aria-selected", x === b));
-    history.replaceState(null, "", `/app/report/${r.id}?tab=${view.tab}`);
+    history.replaceState(null, "", at(`/app/report/${r.id}?tab=${view.tab}`));
     renderPanel();
   });
   el.onclick = (e) => {
@@ -671,7 +671,7 @@ async function rerun(r, sameAsRetry = false) {
 // =================== EXAMPLE ===================
 async function openExample(el) {
   const ex = loadReports().find((r) => r.example && r.sites[0]?.url?.startsWith(location.origin));
-  if (ex) { history.replaceState(null, "", `/app/report/${ex.id}`); return renderReport(el, ex); }
+  if (ex) { history.replaceState(null, "", at(`/app/report/${ex.id}`)); return renderReport(el, ex); }
   fillExample();
   view.el = el;
   const rows = [];
@@ -683,7 +683,7 @@ async function openExample(el) {
   if (rows.length < 2) return renderMissing(el, "The example sites couldn't be loaded", "Try again, or start your own report.");
   const report = await runPipeline({ rows, industry: draft.industry, customer: draft.customer, example: true });
   draft = freshDraft();
-  if (report) { history.replaceState(null, "", `/app/report/${report.id}`); renderReport(el, report); }
+  if (report) { history.replaceState(null, "", at(`/app/report/${report.id}`)); renderReport(el, report); }
 }
 
 // =================== MY REPORTS ===================

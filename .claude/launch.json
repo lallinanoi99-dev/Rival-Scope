@@ -1,7 +1,40 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "rivalscope", "runtimeExecutable": "node", "runtimeArgs": ["scripts/serve.mjs", "5181"], "port": 5181 },
-    { "name": "rivalscope-worker", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "worker", "run", "dev", "--", "--port", "8790", "--ip", "127.0.0.1"], "port": 8790 }
+    {
+      "name": "rivalscope",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/serve.mjs",
+        "5181"
+      ],
+      "port": 5181
+    },
+    {
+      "name": "rivalscope-worker",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "worker",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "8790",
+        "--ip",
+        "127.0.0.1"
+      ],
+      "port": 8790
+    },
+    {
+      "name": "rivalscope-pages",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/serve.mjs",
+        "5182",
+        "/Rival-Scope/"
+      ],
+      "port": 5182
+    }
   ]
 }

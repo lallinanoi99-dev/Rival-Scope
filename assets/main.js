@@ -1,5 +1,5 @@
 // Router (/ website · /app routes), navbar, wallet button, modals, footer (address, block number, sticker pile).
-import { CONFIG, NET, CONTRACT, IS_DEPLOYED } from "./config.js";
+import { CONFIG, NET, CONTRACT, IS_DEPLOYED, BASE, at } from "./config.js";
 import { $, $$, esc, toast, modal, initModal, nav, loadScript, reduced, isMobile } from "./ui.js";
 import { initWallet, onWallet, connect, ensureChain, wallet, short, hasMetaMask, explorerAddr, rpcBlockNumber, readContract } from "./chain.js";
 import { renderApp } from "./app.js";
@@ -9,8 +9,19 @@ const MATTER = "https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.m
 
 // ---------- router ----------
 let siteReady = false;
+// Links are written root-style (href="/app"); point them at the real location under BASE.
+function fixLinks(root) {
+  const list = root.matches?.('a[href^="/"]:not([data-route])') ? [root] : [];
+  list.push(...(root.querySelectorAll?.('a[href^="/"]:not([data-route])') || []));
+  for (const a of list) { const r = a.getAttribute("href"); if (r.startsWith("//")) continue; a.dataset.route = r; a.setAttribute("href", at(r)); }
+}
+new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => n.nodeType === 1 && fixLinks(n)))).observe(document.documentElement, { childList: true, subtree: true });
+fixLinks(document);
+const routePath = () => (location.pathname.startsWith(BASE) ? "/" + location.pathname.slice(BASE.length) : location.pathname);
+
 function route() {
-  const { pathname, search, hash } = location;
+  const { search, hash } = location;
+  const pathname = routePath();
   const params = new URLSearchParams(search);
   const inApp = /^\/app(\/|$)/.test(pathname) || params.has("report");
   document.body.classList.toggle("in-app", inApp);
@@ -30,14 +41,20 @@ function route() {
     window.ScrollTrigger?.refresh();
   }
 }
-nav.go = (url) => { history.pushState(null, "", url); route(); };
+nav.go = (url) => { history.pushState(null, "", at(url)); route(); };
+// In-page anchors ("#main"): scroll here instead of following <base>.
+document.addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || a.getAttribute("href").length < 2) return;
+  const t = document.getElementById(a.getAttribute("href").slice(1));
+  if (t) { e.preventDefault(); t.setAttribute("tabindex", "-1"); t.focus({ preventScroll: true }); t.scrollIntoView(); }
+});
 document.addEventListener("click", (e) => {
   const a = e.target.closest("a[data-link]");
-  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank") return;
-  const u = new URL(a.href, location.href);
-  if (u.origin !== location.origin) return;
+  if (!a || e.metaKey || e.ctrlKey || e.shiftKey || a.target === "_blank" || !a.dataset.route) return;
+  const u = new URL(a.dataset.route, "http://x");
   e.preventDefault();
-  if (u.pathname === location.pathname && u.search === location.search && u.hash) {
+  if (u.pathname === routePath() && u.search === location.search && u.hash) {
     history.pushState(null, "", u.hash);
     document.getElementById(u.hash.slice(1))?.scrollIntoView({ behavior: reduced() ? "auto" : "smooth" });
     $(".nav-links")?.classList.remove("open");
@@ -173,7 +190,7 @@ async function stickers() {
   const box = $("#stickerBox"), row = $("#stickerRow");
   const staticRow = () => {
     row.innerHTML = STICKERS.map((st) => st.g === "bot"
-      ? `<a href="${CONFIG.BOTCHAIN_URL}" target="_blank" rel="noopener" title="Built on BOT Chain"><img src="/assets/botchain-mark.png" alt="Built on BOT Chain" style="border-radius:50%;border:3px solid #17121A;background:#fff"></a>`
+      ? `<a href="${CONFIG.BOTCHAIN_URL}" target="_blank" rel="noopener" title="Built on BOT Chain"><img src="${at("assets/botchain-mark.png")}" alt="Built on BOT Chain" style="border-radius:50%;border:3px solid #17121A;background:#fff"></a>`
       : `<img src="${stickerDataUrl(st)}" alt="">`).join("");
     row.style.display = "flex";
     $("#stickerCanvas").style.display = "none";
@@ -191,7 +208,7 @@ async function stickers() {
   const engine = M.Engine.create({ gravity: { y: 1 } });
   const wall = { isStatic: true, render: { visible: false } };
   M.Composite.add(engine.world, [M.Bodies.rectangle(W / 2, H + 30, W * 2, 60, wall), M.Bodies.rectangle(-30, H / 2, 60, H * 4, wall), M.Bodies.rectangle(W + 30, H / 2, 60, H * 4, wall)]);
-  const botImg = new Image(); botImg.src = "/assets/botchain-mark.png";
+  const botImg = new Image(); botImg.src = at("assets/botchain-mark.png");
   const bodies = STICKERS.map((st, i) => {
     const r = st.g === "bot" ? 37 : 26 + ((i * 7) % 14);
     const b = M.Bodies.circle(W * 0.08 + ((i * 97) % (W * 0.5)), -60 - i * 70, r, { restitution: 0.45, friction: 0.08, frictionAir: 0.01, density: 0.002 });

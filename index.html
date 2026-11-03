@@ -3,22 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // The folder the site lives in ("/" or "/Rival-Scope/"), fixed as <base> so relative files load from it
+  // even after the address is rewritten below. Then restore the real path after the GitHub Pages 404 redirect
+  // (<base>?p=/app/report/x&q=… → <base>app/report/x?…).
+  (function (l) {
+    var dir = l.pathname.replace(/[^/]*$/, "");
+    var b = document.createElement("base"); b.href = dir; document.head.appendChild(b);
+    var q = new URLSearchParams(l.search), p = q.get("p");
+    if (p && /^\/app(\/|$)/.test(p)) history.replaceState(null, "", dir + p.slice(1) + (q.get("q") ? "?" + q.get("q") : "") + l.hash);
+  })(window.location);
+</script>
 <title>RivalScope — The research engine behind irresistible brands</title>
 <meta name="description" content="Paste your website and up to 3 competitors. See how you compare, where the gaps are, and what to say instead — in under a minute. Stamp each report on BOT Chain.">
 <meta property="og:title" content="RivalScope — competitor research in under a minute">
 <meta property="og:description" content="Profiles, a positioning map, gaps and new headlines for your site. Stamped on BOT Chain.">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/styles.css">
-<script>
-  // Restore the real path after the GitHub Pages 404 redirect (/?p=/app/report/x&q=…)
-  (function (l) {
-    var q = new URLSearchParams(l.search), p = q.get("p");
-    if (p && /^\/app(\/|$)/.test(p)) history.replaceState(null, "", p + (q.get("q") ? "?" + q.get("q") : "") + l.hash);
-  })(window.location);
-</script>
+<link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -387,6 +391,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-<script type="module" src="/assets/main.js"></script>
+<script type="module" src="assets/main.js"></script>
 </body>
 </html>

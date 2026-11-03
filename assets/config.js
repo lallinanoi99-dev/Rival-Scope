@@ -38,6 +38,11 @@ export const CONFIG = {
   },
 };
 
+// Where the site lives: "/" on a custom domain, "/Rival-Scope/" on GitHub Pages. Worked out from this file's URL.
+export const BASE = new URL("../", import.meta.url).pathname;
+/** Root-style app path ("/app/report/x") → real URL path under BASE. */
+export const at = (p) => BASE + String(p).replace(/^\//, "");
+
 export const NET = CONFIG.NETWORKS[CONFIG.NETWORK];
 export const CONTRACT = CONFIG.NETWORK === "mainnet" ? CONFIG.MAINNET_CONTRACT_ADDRESS : CONFIG.TESTNET_CONTRACT_ADDRESS;
 export const IS_DEPLOYED = !/^0x0{40}$/i.test(CONTRACT);
